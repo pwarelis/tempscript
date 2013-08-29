@@ -9,10 +9,9 @@ class TypeScript extends LanguageCompiler {
 	protected $defaults = array(
 		"removeComments"
 	);
-	protected $app = "tsc";
 
 	public function compile(Resource $resource) {
-		$this->runApp("{$this->flags} --out {$resource->hash} {$resource->path}");
+		$this->execute("tsc {$this->flags} --out {$resource->hash} {$resource->path}");
 	}
 
 }

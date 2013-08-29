@@ -72,26 +72,12 @@ abstract class LanguageCompiler {
 		return $isModified;
 	}
 
-	protected function detectApp() {
-		$currentApp = basename($this->app);
-		list($return, $output) = $this->execute("readlink -f `which {$currentApp}`");
-		if ($output) {
-			$this->app = $output;
-			return true;
-		}
-		return false;
-	}
+	protected function execute($command) {
+		ob_start();
+		passthru($command . " 2>&1", $return);
+		$output = ob_get_contents();
+		ob_end_clean();
 
-	protected function runApp($parameters) {
-		$command = "{$this->app} {$parameters}";
-		list($return, $output) = $this->execute($command);
-		if ($return == 127) {
-			if (!$this->detectApp()) {
-				throw new \Exception("Compiler application not found");
-			}
-			$command = "{$this->app} {$parameters}";
-			list($return, $output) = $this->execute($command);
-		}
 		switch ($return) {
 			case 0:
 				return;
@@ -101,14 +87,6 @@ abstract class LanguageCompiler {
 			default:
 				$this->processError($return, $output, $command);
 		}
-	}
-
-	protected function execute($command) {
-		ob_start();
-		passthru($command . " 2>&1", $return);
-		$output = ob_get_contents();
-		ob_end_clean();
-		return array($return, trim($output));
 	}
 
 	protected function processError($return, $output, $command) {

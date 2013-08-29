@@ -11,10 +11,9 @@ class UglifyJs2 extends LanguageCompiler {
 		"compress",
 		"mangle" => "sort=true"
 	);
-	protected $app = "uglifyjs";
 
 	public function compile(Resource $resource) {
-		$this->runApp("{$resource->path} {$this->flags} --output {$resource->hash}");
+		$this->execute("uglifyjs {$resource->path} {$this->flags} --output {$resource->hash}");
 	}
 
 }

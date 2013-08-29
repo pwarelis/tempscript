@@ -12,10 +12,9 @@ class Sass extends LanguageCompiler {
 		"unix-newlines",
 		"precision" => 10
 	);
-	protected $app = "sass";
 
 	public function compile(Resource $resource) {
-		$this->runApp("{$this->flags} {$resource->path} {$resource->hash}");
+		$this->execute("sass {$this->flags} {$resource->path} {$resource->hash}");
 	}
 
 }
