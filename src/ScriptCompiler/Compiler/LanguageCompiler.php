@@ -74,9 +74,9 @@ abstract class LanguageCompiler {
 
 	protected function detectApp() {
 		$currentApp = basename($this->app);
-		list($return, $output) = $this->execute("type {$currentApp}");
-		if (preg_match('/\/([^\)]+)/', $output, $match)) {
-			$this->app = "/{$match[1]}";
+		list($return, $output) = $this->execute("readlink -f `which {$currentApp}`");
+		if ($output) {
+			$this->app = $output;
 			return true;
 		}
 		return false;
@@ -108,7 +108,7 @@ abstract class LanguageCompiler {
 		passthru($command . " 2>&1", $return);
 		$output = ob_get_contents();
 		ob_end_clean();
-		return array($return, $output);
+		return array($return, trim($output));
 	}
 
 	protected function processError($return, $output, $command) {
