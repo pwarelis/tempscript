@@ -72,20 +72,42 @@ abstract class LanguageCompiler {
 		return $isModified;
 	}
 
+	protected function detectApp() {
+		$currentApp = basename($this->app);
+		list($return, $output) = $this->execute("type {$currentApp}");
+
+		$output = "minify is hashed (/usr/bin/minify) ";
+		if (preg_match('/\/([^\)]+)/', $output, $match)) {
+			$this->app = "/{$match[1]}";
+			return true;
+		}
+		return false;
+	}
+
+	protected function runApp($parameters) {
+		list($return, $output) = $this->execute("{$this->app} {$parameters}");
+		if ($return == 127 && !$this->detectApp()) {
+			throw new \Exception("Compiler application not found");
+		}
+		list($return, $output) = $this->execute("{$this->app} {$parameters}");
+		switch ($return) {
+			case 0:
+				return;
+			case 127:
+				// Try to detect the app path
+
+				throw new MissingCompilerException(get_called_class() . ": Resource compiler not found", $command);
+			default:
+				$this->processError($return, $output, $command);
+		}
+	}
+
 	protected function execute($command) {
 		ob_start();
 		passthru($command . " 2>&1", $return);
 		$output = ob_get_contents();
 		ob_end_clean();
-
-		switch ($return) {
-			case 0:
-				return;
-			case 127:
-				throw new MissingCompilerException(get_called_class() . ": Resource compiler not found", $command);
-			default:
-				$this->processError($return, $output, $command);
-		}
+		return array($return, $output);
 	}
 
 	protected function processError($return, $output, $command) {
