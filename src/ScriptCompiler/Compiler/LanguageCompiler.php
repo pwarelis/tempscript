@@ -75,8 +75,6 @@ abstract class LanguageCompiler {
 	protected function detectApp() {
 		$currentApp = basename($this->app);
 		list($return, $output) = $this->execute("type {$currentApp}");
-
-		$output = "minify is hashed (/usr/bin/minify) ";
 		if (preg_match('/\/([^\)]+)/', $output, $match)) {
 			$this->app = "/{$match[1]}";
 			return true;
@@ -85,17 +83,20 @@ abstract class LanguageCompiler {
 	}
 
 	protected function runApp($parameters) {
-		list($return, $output) = $this->execute("{$this->app} {$parameters}");
-		if ($return == 127 && !$this->detectApp()) {
-			throw new \Exception("Compiler application not found");
+		$command = "{$this->app} {$parameters}";
+		list($return, $output) = $this->execute($command);
+		if ($return == 127) {
+			if (!$this->detectApp()) {
+				throw new \Exception("Compiler application not found");
+			}
+			$command = "{$this->app} {$parameters}";
+			list($return, $output) = $this->execute($command);
 		}
-		list($return, $output) = $this->execute("{$this->app} {$parameters}");
 		switch ($return) {
 			case 0:
 				return;
 			case 127:
 				// Try to detect the app path
-
 				throw new MissingCompilerException(get_called_class() . ": Resource compiler not found", $command);
 			default:
 				$this->processError($return, $output, $command);
