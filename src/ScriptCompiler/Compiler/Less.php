@@ -10,6 +10,6 @@ class Less extends LanguageCompiler {
 	);
 
 	public function compile(Resource $resource) {
-		$this->execute("lessc {$resource->path} > {$resource->hash}");
+		$this->execute("lessc {$resource->path} {$resource->hash}");
 	}
 }
