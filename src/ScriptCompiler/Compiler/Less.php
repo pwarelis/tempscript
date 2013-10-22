@@ -10,6 +10,6 @@ class Less extends LanguageCompiler {
 	);
 
 	public function compile(Resource $resource) {
-		throw new \Exception("Implement this!");
+		$this->execute("lessc {$resource->path} > {$resource->hash}");
 	}
 }
