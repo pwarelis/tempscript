@@ -7,7 +7,7 @@ use ScriptCompiler\Resource;
 class Scss extends Sass {
 	protected $defaults = array(
 		"scss",
-		"style" => "compressed",
+		"cache-location" => "/tmp/sass-cache",
 		"stop-on-error",
 		"unix-newlines",
 		"precision" => 10
