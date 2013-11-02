@@ -8,7 +8,7 @@ class Sass extends LanguageCompiler {
 	protected $baseLanguage = "css";
 	protected $defaults = array(
 		"style" => "compressed",
-		"cache_location" => "/tmp/sass-cache",
+		"cache-location" => "/tmp/sass-cache",
 		"stop-on-error",
 		"unix-newlines",
 		"precision" => 10
