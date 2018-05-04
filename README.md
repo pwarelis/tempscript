@@ -3,8 +3,6 @@ ScriptCompiler: Web Resource Compression and Caching Library
 
 This is proof of concept.
 
-[Documentation will be available soon at rtfd.org](https://script-compiler.readthedocs.org/en/latest/).
-
 LICENSE
 =======
 
